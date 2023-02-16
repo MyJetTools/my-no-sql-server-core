@@ -1,13 +1,9 @@
-use std::{
-    collections::{BTreeMap, VecDeque},
-    sync::Arc,
-};
+use std::{collections::VecDeque, sync::Arc};
 
+#[cfg(feature = "master_node")]
+use crate::db_snapshots::{DbPartitionSnapshot, DbTableSnapshot};
 use my_json::json_writer::JsonArrayWriter;
-use my_no_sql_core::db::{
-    db_snapshots::{DbPartitionSnapshot, DbTableSnapshot},
-    DbRow, DbTable,
-};
+use my_no_sql_core::db::{DbRow, DbTable};
 use tokio::sync::RwLock;
 
 pub struct DbTableWrapper {
@@ -41,13 +37,15 @@ impl DbTableWrapper {
 
         result
     }
-
+    #[cfg(feature = "master_node")]
     pub async fn get_table_snapshot(&self) -> DbTableSnapshot {
         let read_access = self.data.read().await;
 
         DbTableSnapshot {
             last_update_time: read_access.get_last_update_time(),
             by_partition: get_partitions_snapshot(&read_access),
+            #[cfg(feature = "master_node")]
+            attr: read_access.attributes.clone(),
         }
     }
 
@@ -62,8 +60,11 @@ impl DbTableWrapper {
     }
 }
 
-fn get_partitions_snapshot(db_table: &DbTable) -> BTreeMap<String, DbPartitionSnapshot> {
-    let mut result = BTreeMap::new();
+#[cfg(feature = "master_node")]
+fn get_partitions_snapshot(
+    db_table: &DbTable,
+) -> std::collections::BTreeMap<String, DbPartitionSnapshot> {
+    let mut result = std::collections::BTreeMap::new();
 
     for (partition_key, db_partition) in &db_table.partitions {
         result.insert(partition_key.to_string(), db_partition.into());

@@ -2,7 +2,7 @@ use tokio::sync::RwLock;
 
 use std::{collections::HashMap, sync::Arc};
 
-use crate::DbTableWrapper;
+use super::DbTableWrapper;
 
 pub struct DbInstance {
     pub tables: RwLock<HashMap<String, Arc<DbTableWrapper>>>,
@@ -21,7 +21,7 @@ impl DbInstance {
         return read_access
             .values()
             .into_iter()
-            .map(|table| table.name.to_string())
+            .map(|table| table.name.clone())
             .collect();
     }
 
@@ -40,10 +40,5 @@ impl DbInstance {
 
         let result = read_access.get(table_name)?;
         return Some(result.clone());
-    }
-
-    pub async fn delete_table(&self, table_name: &str) -> Option<Arc<DbTableWrapper>> {
-        let mut write_access = self.tables.write().await;
-        return write_access.remove(table_name);
     }
 }
