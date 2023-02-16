@@ -1,0 +1,11 @@
+[package]
+name = "my-no-sql-server-core"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rust-extensions = { tag = "0.1.3", git = "https://github.com/MyJetTools/rust-extensions.git" }
+tokio = { version = "*", features = ["full"] }
+my-no-sql-core = { tag = "0.1.2", git = "https://github.com/MyJetTools/my-no-sql-core.git" }
