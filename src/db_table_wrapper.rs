@@ -1,5 +1,6 @@
 use std::{collections::VecDeque, sync::Arc};
 
+use crate::db_snapshots::{DbPartitionSnapshot, DbTableSnapshot};
 #[cfg(feature = "master_node")]
 use crate::db_snapshots::{DbPartitionSnapshot, DbTableSnapshot};
 use my_json::json_writer::JsonArrayWriter;
@@ -37,7 +38,7 @@ impl DbTableWrapper {
 
         result
     }
-    #[cfg(feature = "master_node")]
+
     pub async fn get_table_snapshot(&self) -> DbTableSnapshot {
         let read_access = self.data.read().await;
 
@@ -60,7 +61,6 @@ impl DbTableWrapper {
     }
 }
 
-#[cfg(feature = "master_node")]
 fn get_partitions_snapshot(
     db_table: &DbTable,
 ) -> std::collections::BTreeMap<String, DbPartitionSnapshot> {
