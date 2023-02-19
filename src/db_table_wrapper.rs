@@ -1,8 +1,6 @@
 use std::{collections::VecDeque, sync::Arc};
 
 use crate::db_snapshots::{DbPartitionSnapshot, DbTableSnapshot};
-#[cfg(feature = "master_node")]
-use crate::db_snapshots::{DbPartitionSnapshot, DbTableSnapshot};
 use my_json::json_writer::JsonArrayWriter;
 use my_no_sql_core::db::{DbRow, DbTable};
 use tokio::sync::RwLock;
