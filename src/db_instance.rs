@@ -41,4 +41,9 @@ impl DbInstance {
         let result = read_access.get(table_name)?;
         return Some(result.clone());
     }
+
+    pub async fn delete_table(&self, table_name: &str) -> Option<Arc<DbTableWrapper>> {
+        let mut write_access = self.tables.write().await;
+        write_access.remove(table_name)
+    }
 }
