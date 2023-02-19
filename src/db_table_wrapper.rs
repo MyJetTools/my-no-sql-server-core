@@ -2,7 +2,7 @@ use std::{collections::VecDeque, sync::Arc};
 
 use crate::db_snapshots::{DbPartitionSnapshot, DbTableSnapshot};
 use my_json::json_writer::JsonArrayWriter;
-use my_no_sql_core::db::{DbRow, DbTable};
+use my_no_sql_core::db::{DbRow, DbTable, DbTableAttributes};
 use tokio::sync::RwLock;
 
 pub struct DbTableWrapper {
@@ -56,6 +56,18 @@ impl DbTableWrapper {
     pub async fn get_table_size(&self) -> usize {
         let read_access = self.data.read().await;
         read_access.get_table_size()
+    }
+
+    #[cfg(feature = "master_node")]
+    pub async fn get_max_partition_amount(&self) -> Option<usize> {
+        let read_access = self.data.read().await;
+        read_access.attributes.max_partitions_amount
+    }
+
+    #[cfg(feature = "master_node")]
+    pub async fn get_attributes(&self) -> DbTableAttributes {
+        let read_access = self.data.read().await;
+        read_access.attributes.clone()
     }
 }
 
