@@ -69,6 +69,13 @@ impl DbTableWrapper {
         let read_access = self.data.read().await;
         read_access.attributes.clone()
     }
+
+    #[cfg(feature = "master_node")]
+    pub async fn get_partition_snapshot(&self, partition_key: &str) -> Option<DbPartitionSnapshot> {
+        let read_access = self.data.read().await;
+        let db_partition = read_access.get_partition(partition_key)?;
+        Some(db_partition.into())
+    }
 }
 
 fn get_partitions_snapshot(
