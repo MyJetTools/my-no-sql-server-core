@@ -59,7 +59,7 @@ impl DbTableWrapper {
     }
 
     #[cfg(feature = "master_node")]
-    pub async fn get_max_partition_amount(&self) -> Option<usize> {
+    pub async fn get_max_partitions_amount(&self) -> Option<usize> {
         let read_access = self.data.read().await;
         read_access.attributes.max_partitions_amount
     }
