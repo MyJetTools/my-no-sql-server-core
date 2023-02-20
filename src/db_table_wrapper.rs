@@ -2,8 +2,11 @@ use std::{collections::VecDeque, sync::Arc};
 
 use crate::db_snapshots::{DbPartitionSnapshot, DbTableSnapshot};
 use my_json::json_writer::JsonArrayWriter;
-use my_no_sql_core::db::{DbRow, DbTable, DbTableAttributes};
+use my_no_sql_core::db::{DbRow, DbTable};
 use tokio::sync::RwLock;
+
+#[cfg(feature = "master_node")]
+use my_no_sql_core::db::DbTableAttributes;
 
 pub struct DbTableWrapper {
     pub name: String,
