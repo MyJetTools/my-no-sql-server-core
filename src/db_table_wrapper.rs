@@ -55,6 +55,11 @@ impl DbTableWrapper {
         let read_access = self.data.read().await;
         read_access.partitions.len()
     }
+    #[cfg(feature = "master_node")]
+    pub async fn get_persist_table(&self) -> bool {
+        let read_access = self.data.read().await;
+        read_access.attributes.persist
+    }
 
     pub async fn get_table_size(&self) -> usize {
         let read_access = self.data.read().await;
