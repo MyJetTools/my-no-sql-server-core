@@ -5,7 +5,7 @@ use my_json::json_writer::JsonArrayWriter;
 use my_no_sql_core::db::{DbRow, DbTable};
 use tokio::sync::RwLock;
 
-#[cfg(feature = "master_node")]
+#[cfg(feature = "master-node")]
 use my_no_sql_core::db::DbTableAttributes;
 
 pub struct DbTableWrapper {
@@ -46,7 +46,7 @@ impl DbTableWrapper {
         DbTableSnapshot {
             last_update_time: read_access.get_last_update_time(),
             by_partition: get_partitions_snapshot(&read_access),
-            #[cfg(feature = "master_node")]
+            #[cfg(feature = "master-node")]
             attr: read_access.attributes.clone(),
         }
     }
@@ -55,7 +55,7 @@ impl DbTableWrapper {
         let read_access = self.data.read().await;
         read_access.partitions.len()
     }
-    #[cfg(feature = "master_node")]
+    #[cfg(feature = "master-node")]
     pub async fn get_persist_table(&self) -> bool {
         let read_access = self.data.read().await;
         read_access.attributes.persist
@@ -66,19 +66,19 @@ impl DbTableWrapper {
         read_access.get_table_size()
     }
 
-    #[cfg(feature = "master_node")]
+    #[cfg(feature = "master-node")]
     pub async fn get_max_partitions_amount(&self) -> Option<usize> {
         let read_access = self.data.read().await;
         read_access.attributes.max_partitions_amount
     }
 
-    #[cfg(feature = "master_node")]
+    #[cfg(feature = "master-node")]
     pub async fn get_attributes(&self) -> DbTableAttributes {
         let read_access = self.data.read().await;
         read_access.attributes.clone()
     }
 
-    #[cfg(feature = "master_node")]
+    #[cfg(feature = "master-node")]
     pub async fn get_partition_snapshot(&self, partition_key: &str) -> Option<DbPartitionSnapshot> {
         let read_access = self.data.read().await;
         let db_partition = read_access.get_partition(partition_key)?;

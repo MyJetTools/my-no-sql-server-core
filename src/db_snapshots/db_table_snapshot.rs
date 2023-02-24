@@ -7,7 +7,7 @@ use rust_extensions::date_time::DateTimeAsMicroseconds;
 use super::DbPartitionSnapshot;
 
 pub struct DbTableSnapshot {
-    #[cfg(feature = "master_node")]
+    #[cfg(feature = "master-node")]
     pub attr: my_no_sql_core::db::DbTableAttributes,
     pub last_update_time: DateTimeAsMicroseconds,
     pub by_partition: BTreeMap<String, DbPartitionSnapshot>,
@@ -22,7 +22,7 @@ impl DbTableSnapshot {
         }
 
         Self {
-            #[cfg(feature = "master_node")]
+            #[cfg(feature = "master-node")]
             attr: db_table.attributes.clone(),
             last_update_time,
             by_partition,
