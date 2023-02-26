@@ -44,7 +44,8 @@ impl DbTableWrapper {
         let read_access = self.data.read().await;
 
         DbTableSnapshot {
-            last_update_time: read_access.get_last_update_time(),
+            #[cfg(feature = "master-node")]
+            last_write_moment: read_access.get_last_write_moment(),
             by_partition: get_partitions_snapshot(&read_access),
             #[cfg(feature = "master-node")]
             attr: read_access.attributes.clone(),

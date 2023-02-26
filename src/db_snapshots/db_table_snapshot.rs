@@ -2,6 +2,7 @@ use std::collections::BTreeMap;
 
 use my_json::json_writer::JsonArrayWriter;
 use my_no_sql_core::db::DbTable;
+#[cfg(feature = "master-node")]
 use rust_extensions::date_time::DateTimeAsMicroseconds;
 
 use super::DbPartitionSnapshot;
@@ -9,12 +10,16 @@ use super::DbPartitionSnapshot;
 pub struct DbTableSnapshot {
     #[cfg(feature = "master-node")]
     pub attr: my_no_sql_core::db::DbTableAttributes,
-    pub last_update_time: DateTimeAsMicroseconds,
+    #[cfg(feature = "master-node")]
+    pub last_write_moment: DateTimeAsMicroseconds,
     pub by_partition: BTreeMap<String, DbPartitionSnapshot>,
 }
 
 impl DbTableSnapshot {
-    pub fn new(last_update_time: DateTimeAsMicroseconds, db_table: &DbTable) -> Self {
+    pub fn new(
+        #[cfg(feature = "master-node")] last_write_moment: DateTimeAsMicroseconds,
+        db_table: &DbTable,
+    ) -> Self {
         let mut by_partition = BTreeMap::new();
 
         for (partition_key, db_partition) in db_table.partitions.get_all() {
@@ -24,7 +29,8 @@ impl DbTableSnapshot {
         Self {
             #[cfg(feature = "master-node")]
             attr: db_table.attributes.clone(),
-            last_update_time,
+            #[cfg(feature = "master-node")]
+            last_write_moment,
             by_partition,
         }
     }

@@ -19,20 +19,6 @@ impl DbPartitionSnapshot {
         written_in_blob.unix_microseconds < self.last_write_moment.unix_microseconds
     }
 }
-/*
-#[cfg(feature = "master-node")]
-impl Into<BTreeMap<String, DbPartitionSnapshot>> for &DbTable {
-    fn into(self) -> BTreeMap<String, DbPartitionSnapshot> {
-        let mut result: BTreeMap<String, DbPartitionSnapshot> = BTreeMap::new();
-
-        for (partition_key, db_partition) in &self.partitions {
-            result.insert(partition_key.to_string(), db_partition.into());
-        }
-
-        result
-    }
-}
- */
 
 impl Into<DbRowsSnapshot> for &DbPartition {
     fn into(self) -> DbRowsSnapshot {
@@ -46,7 +32,7 @@ impl Into<DbPartitionSnapshot> for &DbPartition {
             #[cfg(feature = "master-node")]
             last_read_moment: self.last_read_moment.as_date_time(),
             #[cfg(feature = "master-node")]
-            last_write_moment: self.last_write_moment.as_date_time(),
+            last_write_moment: self.last_write_moment,
             db_rows_snapshot: self.into(),
         }
     }
