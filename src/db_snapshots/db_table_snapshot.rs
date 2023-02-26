@@ -17,7 +17,7 @@ impl DbTableSnapshot {
     pub fn new(last_update_time: DateTimeAsMicroseconds, db_table: &DbTable) -> Self {
         let mut by_partition = BTreeMap::new();
 
-        for (partition_key, db_partition) in &db_table.partitions {
+        for (partition_key, db_partition) in db_table.partitions.get_all() {
             by_partition.insert(partition_key.to_string(), db_partition.into());
         }
 

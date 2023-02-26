@@ -91,7 +91,7 @@ fn get_partitions_snapshot(
 ) -> std::collections::BTreeMap<String, DbPartitionSnapshot> {
     let mut result = std::collections::BTreeMap::new();
 
-    for (partition_key, db_partition) in &db_table.partitions {
+    for (partition_key, db_partition) in db_table.partitions.get_all() {
         result.insert(partition_key.to_string(), db_partition.into());
     }
 
