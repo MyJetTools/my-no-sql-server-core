@@ -9,7 +9,7 @@ use super::DbPartitionSnapshot;
 
 pub struct DbTableSnapshot {
     #[cfg(feature = "master-node")]
-    pub attr: my_no_sql_core::db::DbTableAttributes,
+    pub attr: my_no_sql_sdk::core::db::DbTableAttributes,
     #[cfg(feature = "master-node")]
     pub last_write_moment: DateTimeAsMicroseconds,
     pub by_partition: BTreeMap<String, DbPartitionSnapshot>,
