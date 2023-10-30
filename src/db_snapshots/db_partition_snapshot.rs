@@ -1,4 +1,4 @@
-use my_no_sql_core::db::DbPartition;
+use my_no_sql_sdk::core::db::DbPartition;
 
 use super::DbRowsSnapshot;
 

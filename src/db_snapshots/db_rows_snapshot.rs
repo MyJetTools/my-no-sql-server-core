@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use my_json::json_writer::JsonArrayWriter;
-use my_no_sql_core::db::DbRow;
+use my_no_sql_sdk::core::db::DbRow;
 
 pub struct DbRowsSnapshot {
     pub db_rows: Vec<Arc<DbRow>>,
