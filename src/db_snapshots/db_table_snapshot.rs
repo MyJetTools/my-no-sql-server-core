@@ -40,7 +40,7 @@ impl DbTableSnapshot {
 
         for db_partition_snapshot in self.by_partition.values() {
             for db_row in &db_partition_snapshot.db_rows_snapshot.db_rows {
-                json_array_writer.write_raw_element(&db_row.data);
+                db_row.compile_json(json_array_writer.get_mut_to_write_raw_element());
             }
         }
 

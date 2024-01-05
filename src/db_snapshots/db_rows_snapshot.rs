@@ -35,7 +35,7 @@ impl DbRowsSnapshot {
     pub fn as_json_array(&self) -> JsonArrayWriter {
         let mut json_array_writer = JsonArrayWriter::new();
         for db_row in &self.db_rows {
-            json_array_writer.write_raw_element(db_row.data.as_slice());
+            db_row.compile_json(json_array_writer.get_mut_to_write_raw_element());
         }
 
         json_array_writer
