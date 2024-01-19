@@ -1,16 +1,16 @@
-use std::{collections::BTreeMap, sync::Arc};
+use std::sync::Arc;
 
 use my_json::json_writer::JsonArrayWriter;
-use my_no_sql_sdk::core::db::DbRow;
+use my_no_sql_sdk::core::db::{DbRow, PartitionKey};
 
 pub struct DbRowsByPartitionsSnapshot {
-    pub partitions: BTreeMap<String, Vec<Arc<DbRow>>>,
+    pub partitions: Vec<(PartitionKey, Vec<Arc<DbRow>>)>,
 }
 
 impl DbRowsByPartitionsSnapshot {
     pub fn new() -> Self {
         Self {
-            partitions: BTreeMap::new(),
+            partitions: Vec::new(),
         }
     }
 
@@ -18,31 +18,32 @@ impl DbRowsByPartitionsSnapshot {
         self.partitions.len() > 0
     }
 
-    pub fn add_row(&mut self, db_row: Arc<DbRow>) {
-        let partition_key = db_row.get_partition_key();
-        if !self.partitions.contains_key(partition_key) {
-            self.partitions
-                .insert(partition_key.to_string(), Vec::new());
-        }
+    fn get_or_create_partition(&mut self, partition_key: &PartitionKey) -> &mut Vec<Arc<DbRow>> {
+        let index = self
+            .partitions
+            .binary_search_by(|itm| itm.0.as_str().cmp(partition_key.as_str()));
 
-        self.partitions.get_mut(partition_key).unwrap().push(db_row);
+        match index {
+            Ok(index) => self.partitions.get_mut(index).unwrap().1.as_mut(),
+            Err(index) => {
+                self.partitions
+                    .insert(index, (partition_key.clone(), Vec::new()));
+                self.partitions.get_mut(index).unwrap().1.as_mut()
+            }
+        }
     }
 
-    pub fn add_rows(&mut self, partition_key: &str, db_rows: Vec<Arc<DbRow>>) {
-        if !self.partitions.contains_key(partition_key) {
-            self.partitions.insert(partition_key.to_string(), db_rows);
-            return;
-        }
+    pub fn add_row(&mut self, partition_key: &PartitionKey, db_row: Arc<DbRow>) {
+        self.get_or_create_partition(partition_key).push(db_row);
+    }
 
-        self.partitions
-            .get_mut(partition_key)
-            .unwrap()
-            .extend(db_rows);
+    pub fn add_rows(&mut self, partition_key: &PartitionKey, db_rows: Vec<Arc<DbRow>>) {
+        self.get_or_create_partition(partition_key).extend(db_rows);
     }
 
     pub fn as_json_array(&self) -> JsonArrayWriter {
         let mut json_array_writer = JsonArrayWriter::new();
-        for snapshot in self.partitions.values() {
+        for (_, snapshot) in self.partitions.iter() {
             for db_row in snapshot {
                 json_array_writer.write(db_row.as_ref());
             }
