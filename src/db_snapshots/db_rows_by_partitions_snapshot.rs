@@ -36,8 +36,8 @@ impl DbRowsByPartitionsSnapshot {
         }
     }
 
-    pub fn add_row(&mut self, partition_key: &impl PartitionKeyParameter, db_row: Arc<DbRow>) {
-        self.get_or_create_partition(partition_key).push(db_row);
+    pub fn add_row(&mut self, db_row: Arc<DbRow>) {
+        self.get_or_create_partition(&db_row).push(db_row);
     }
 
     pub fn add_rows(
