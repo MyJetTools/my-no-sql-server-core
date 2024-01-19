@@ -33,7 +33,7 @@ impl DbTableWrapper {
 
         let mut result = VecDeque::new();
 
-        for db_row in read_access.get_all_rows() {
+        for (_, db_row) in read_access.get_all_rows(None, None) {
             result.push_back(db_row.clone());
         }
 
