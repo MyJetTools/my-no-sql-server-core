@@ -87,13 +87,11 @@ impl DbTableWrapper {
     }
 }
 
-fn get_partitions_snapshot(
-    db_table: &DbTable,
-) -> std::collections::BTreeMap<String, DbPartitionSnapshot> {
-    let mut result = std::collections::BTreeMap::new();
+fn get_partitions_snapshot(db_table: &DbTable) -> Vec<DbPartitionSnapshot> {
+    let mut result = Vec::with_capacity(db_table.partitions.len());
 
-    for (partition_key, db_partition) in db_table.partitions.get_all() {
-        result.insert(partition_key.to_string(), db_partition.into());
+    for db_partition in db_table.partitions.get_partitions() {
+        result.push(db_partition.into());
     }
 
     result
