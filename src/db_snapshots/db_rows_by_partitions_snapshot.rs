@@ -20,7 +20,7 @@ impl DbRowsByPartitionsSnapshot {
 
     fn get_or_create_partition(
         &mut self,
-        partition_key: &impl PartitionKeyParameter,
+        partition_key: impl PartitionKeyParameter,
     ) -> &mut Vec<Arc<DbRow>> {
         let index = self
             .partitions
@@ -36,13 +36,13 @@ impl DbRowsByPartitionsSnapshot {
         }
     }
 
-    pub fn add_row(&mut self, partition_key: &impl PartitionKeyParameter, db_row: Arc<DbRow>) {
+    pub fn add_row(&mut self, partition_key: impl PartitionKeyParameter, db_row: Arc<DbRow>) {
         self.get_or_create_partition(partition_key).push(db_row);
     }
 
     pub fn add_rows(
         &mut self,
-        partition_key: &impl PartitionKeyParameter,
+        partition_key: impl PartitionKeyParameter,
         db_rows: Vec<Arc<DbRow>>,
     ) {
         self.get_or_create_partition(partition_key).extend(db_rows);
