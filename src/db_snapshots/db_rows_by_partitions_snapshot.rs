@@ -18,7 +18,7 @@ impl DbRowsByPartitionsSnapshot {
         self.partitions.len() > 0
     }
 
-    fn get_or_create_partition(&mut self, partition_key: &PartitionKey) -> &mut Vec<Arc<DbRow>> {
+    fn get_or_create_partition(&mut self, partition_key: PartitionKey) -> &mut Vec<Arc<DbRow>> {
         let index = self
             .partitions
             .binary_search_by(|itm| itm.0.as_str().cmp(partition_key.as_str()));
@@ -33,11 +33,11 @@ impl DbRowsByPartitionsSnapshot {
         }
     }
 
-    pub fn add_row(&mut self, partition_key: &PartitionKey, db_row: Arc<DbRow>) {
+    pub fn add_row(&mut self, partition_key: PartitionKey, db_row: Arc<DbRow>) {
         self.get_or_create_partition(partition_key).push(db_row);
     }
 
-    pub fn add_rows(&mut self, partition_key: &PartitionKey, db_rows: Vec<Arc<DbRow>>) {
+    pub fn add_rows(&mut self, partition_key: PartitionKey, db_rows: Vec<Arc<DbRow>>) {
         self.get_or_create_partition(partition_key).extend(db_rows);
     }
 
