@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use my_json::json_writer::JsonArrayWriter;
-use my_no_sql_sdk::core::db::{DbRow, PartitionKey};
+use my_no_sql_sdk::core::db::{DbRow, PartitionKey, PartitionKeyParameter};
 
 pub struct DbRowsByPartitionsSnapshot {
     pub partitions: Vec<(PartitionKey, Vec<Arc<DbRow>>)>,
@@ -18,7 +18,10 @@ impl DbRowsByPartitionsSnapshot {
         self.partitions.len() > 0
     }
 
-    fn get_or_create_partition(&mut self, partition_key: PartitionKey) -> &mut Vec<Arc<DbRow>> {
+    fn get_or_create_partition(
+        &mut self,
+        partition_key: &impl PartitionKeyParameter,
+    ) -> &mut Vec<Arc<DbRow>> {
         let index = self
             .partitions
             .binary_search_by(|itm| itm.0.as_str().cmp(partition_key.as_str()));
@@ -27,17 +30,21 @@ impl DbRowsByPartitionsSnapshot {
             Ok(index) => self.partitions.get_mut(index).unwrap().1.as_mut(),
             Err(index) => {
                 self.partitions
-                    .insert(index, (partition_key.clone(), Vec::new()));
+                    .insert(index, (partition_key.to_partition_key(), Vec::new()));
                 self.partitions.get_mut(index).unwrap().1.as_mut()
             }
         }
     }
 
-    pub fn add_row(&mut self, partition_key: PartitionKey, db_row: Arc<DbRow>) {
+    pub fn add_row(&mut self, partition_key: &impl PartitionKeyParameter, db_row: Arc<DbRow>) {
         self.get_or_create_partition(partition_key).push(db_row);
     }
 
-    pub fn add_rows(&mut self, partition_key: PartitionKey, db_rows: Vec<Arc<DbRow>>) {
+    pub fn add_rows(
+        &mut self,
+        partition_key: &impl PartitionKeyParameter,
+        db_rows: Vec<Arc<DbRow>>,
+    ) {
         self.get_or_create_partition(partition_key).extend(db_rows);
     }
 
