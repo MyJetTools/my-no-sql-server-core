@@ -11,6 +11,7 @@ master-node = ["my-no-sql-sdk/master-node"]
 [dependencies]
 rust-extensions = { tag = "0.1.4", git = "https://github.com/MyJetTools/rust-extensions.git", features = [
     "with-tokio",
+    "base64",
 ] }
 tokio = { version = "*", features = ["full"] }
 my-no-sql-sdk = { tag = "0.3.1", git = "https://github.com/MyJetTools/my-no-sql-sdk.git" }
