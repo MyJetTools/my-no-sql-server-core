@@ -1,7 +1,7 @@
 use std::{collections::VecDeque, sync::Arc};
 
 use crate::db_snapshots::{DbPartitionSnapshot, DbTableSnapshot};
-use my_no_sql_sdk::core::db::{DbRow, DbTable};
+use my_no_sql_sdk::core::db::{DbRow, DbTable, DbTableName};
 use my_no_sql_sdk::core::my_json::json_writer::JsonArrayWriter;
 use tokio::sync::RwLock;
 
@@ -9,7 +9,7 @@ use tokio::sync::RwLock;
 use my_no_sql_sdk::core::db::DbTableAttributes;
 
 pub struct DbTableWrapper {
-    pub name: String,
+    pub name: DbTableName,
     pub data: RwLock<DbTable>,
 }
 

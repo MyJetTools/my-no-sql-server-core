@@ -1,3 +1,4 @@
+use my_no_sql_sdk::core::db::DbTableName;
 use tokio::sync::RwLock;
 
 use std::{collections::HashMap, sync::Arc};
@@ -15,7 +16,7 @@ impl DbInstance {
         }
     }
 
-    pub async fn get_table_names(&self) -> Vec<String> {
+    pub async fn get_table_names(&self) -> Vec<DbTableName> {
         let read_access = self.tables.read().await;
 
         return read_access
